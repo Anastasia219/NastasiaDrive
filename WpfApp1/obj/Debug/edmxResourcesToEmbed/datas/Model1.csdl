@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Cost" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="DateBuy" Type="DateTime" Precision="3" />
+    <Property Name="ManegerId" Type="Int32" />
+    <Property Name="BuerId" Type="Int32" />
+    <NavigationProperty Name="user" Relationship="Self.FK_Order_user" FromRole="Order" ToRole="user" />
+    <NavigationProperty Name="user1" Relationship="Self.FK_Order_user1" FromRole="Order" ToRole="user" />
+    <NavigationProperty Name="ToyOrder" Relationship="Self.FK_ToyOrder_Order" FromRole="Order" ToRole="ToyOrder" />
+  </EntityType>
+  <EntityType Name="role">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="user" Relationship="Self.FK_user_role" FromRole="role" ToRole="user" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="ToyOrder">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ToyId" Type="Int32" />
+    <Property Name="Count" Type="Int32" />
+    <Property Name="OrderId" Type="Int32" />
+    <NavigationProperty Name="Order" Relationship="Self.FK_ToyOrder_Order" FromRole="ToyOrder" ToRole="Order" />
+    <NavigationProperty Name="toy" Relationship="Model.FK_ToyOrder_toy" FromRole="ToyOrder" ToRole="toy" />
+  </EntityType>
+  <EntityType Name="Type">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="toy" Relationship="Model.FK_toy_Type" FromRole="Type" ToRole="toy" />
+  </EntityType>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Roleid" Type="Int32" Nullable="false" />
+    <Property Name="Login" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Order" Relationship="Self.FK_Order_user" FromRole="user" ToRole="Order" />
+    <NavigationProperty Name="Order1" Relationship="Self.FK_Order_user1" FromRole="user" ToRole="Order" />
+    <NavigationProperty Name="role" Relationship="Self.FK_user_role" FromRole="user" ToRole="role" />
+  </EntityType>
+  <Association Name="FK_Order_user">
+    <End Role="user" Type="Self.user" Multiplicity="0..1" />
+    <End Role="Order" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="user">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="ManegerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Order_user1">
+    <End Role="user" Type="Self.user" Multiplicity="0..1" />
+    <End Role="Order" Type="Self.Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="user">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Order">
+        <PropertyRef Name="BuerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ToyOrder_Order">
+    <End Role="Order" Type="Self.Order" Multiplicity="0..1" />
+    <End Role="ToyOrder" Type="Self.ToyOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ToyOrder">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_role">
+    <End Role="role" Type="Self.role" Multiplicity="1" />
+    <End Role="user" Type="Self.user" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="role">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="user">
+        <PropertyRef Name="Roleid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ShopToyEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Order" EntityType="Self.Order" />
+    <EntitySet Name="role" EntityType="Self.role" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="ToyOrder" EntityType="Self.ToyOrder" />
+    <EntitySet Name="Type" EntityType="Self.Type" />
+    <EntitySet Name="user" EntityType="Self.user" />
+    <AssociationSet Name="FK_Order_user" Association="Self.FK_Order_user">
+      <End Role="user" EntitySet="user" />
+      <End Role="Order" EntitySet="Order" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Order_user1" Association="Self.FK_Order_user1">
+      <End Role="user" EntitySet="user" />
+      <End Role="Order" EntitySet="Order" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ToyOrder_Order" Association="Self.FK_ToyOrder_Order">
+      <End Role="Order" EntitySet="Order" />
+      <End Role="ToyOrder" EntitySet="ToyOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_role" Association="Self.FK_user_role">
+      <End Role="role" EntitySet="role" />
+      <End Role="user" EntitySet="user" />
+    </AssociationSet>
+    <EntitySet Name="toy" EntityType="Model.toy" />
+    <AssociationSet Name="FK_toy_Type" Association="Model.FK_toy_Type">
+      <End Role="Type" EntitySet="Type" />
+      <End Role="toy" EntitySet="toy" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ToyOrder_toy" Association="Model.FK_ToyOrder_toy">
+      <End Role="toy" EntitySet="toy" />
+      <End Role="ToyOrder" EntitySet="ToyOrder" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="toy">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MainImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="TypeId" Type="Int32" />
+    <Property Name="IsDelete" Type="Boolean" />
+    <NavigationProperty Name="Type" Relationship="Model.FK_toy_Type" FromRole="toy" ToRole="Type" />
+    <NavigationProperty Name="ToyOrder" Relationship="Model.FK_ToyOrder_toy" FromRole="toy" ToRole="ToyOrder" />
+  </EntityType>
+  <Association Name="FK_toy_Type">
+    <End Type="Model.Type" Role="Type" Multiplicity="0..1" />
+    <End Type="Model.toy" Role="toy" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Type">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="toy">
+        <PropertyRef Name="TypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ToyOrder_toy">
+    <End Type="Model.toy" Role="toy" Multiplicity="0..1" />
+    <End Type="Model.ToyOrder" Role="ToyOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="toy">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ToyOrder">
+        <PropertyRef Name="ToyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
